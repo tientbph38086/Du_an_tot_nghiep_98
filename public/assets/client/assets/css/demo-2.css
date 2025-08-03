@@ -660,7 +660,7 @@ footer .footer-top-section .footer-logos {
   display: flex;
   -webkit-box-pack: start;
       -ms-flex-pack: start;
-          justify-content: flex-start;
+          justify-content: center;
 }
 footer .footer-top-section .footer-logos img {
   width: 180px;
@@ -758,13 +758,13 @@ footer .footer-top-section .lh-social-media .lh-follow-social {
   padding-top: 24px;
 }
 footer .footer-top-section .lh-social-media .lh-follow-social h4.heading {
-  text-align: left;
+  text-align: center;
   font-size: 18px;
   font-weight: 500;
 }
 footer .footer-top-section .lh-social-media .lh-follow-social .footer-logo-image {
   padding-top: 15px;
-  text-align: left;
+  text-align: center;
 }
 footer .footer-top-section .lh-social-media .lh-follow-social .footer-logo-image img {
   width: 30px;

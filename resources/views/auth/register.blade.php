@@ -4,7 +4,7 @@
 <form class="signup-form" method="post" action="{{ route('register') }}">
     @csrf
     <div class="imgcontainer">
-        <a href=""><img src="{{ asset('assets/admin/assets/img/logo/full-logo.png') }}" alt="logo" class="logo"></a>
+        {{-- <a href=""><img src="{{ asset('assets/admin/assets/img/logo/full-logo.png') }}" alt="logo" class="logo"></a> --}}
     </div>
     <div class="input-control">
         <div class="row p-l-5 p-r-5">

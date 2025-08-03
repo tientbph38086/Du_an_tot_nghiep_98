@@ -4,7 +4,7 @@
 <form class="login-form" method="POST" action="{{ route('login') }}">
     @csrf
     <div class="imgcontainer">
-        <a href="index.html"><img src="{{ asset('assets/admin/assets/img/logo/full-logo.png')}}" alt="logo" class="logo"></a>
+        {{-- <a href="index.html"><img src="{{ asset('assets/admin/assets/img/logo/full-logo.png')}}" alt="logo" class="logo"></a> --}}
     </div>
     <div class="input-control">
         <x-input-label for="email" :value="__('Email')" />

@@ -1,10 +1,4 @@
-<!--
-    Item Name: Luxurious - Hotel Booking HTML Template + Admin Dashboard.
-    Author: ashishmaraviya
-    Version: 2.2.0
-    Copyright 2024
- Author URI: https://themeforest.net/user/ashishmaraviya
--->
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 

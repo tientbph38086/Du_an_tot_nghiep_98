@@ -19,7 +19,7 @@
         content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
     <meta name="author" content="ashishmaraviya">
 
-	<title>Luxurious - Hotel Booking HTML Template + Admin Dashboard</title>
+	<title>Lumora Hotel</title>
 
 	<!-- App favicon -->
 	<link rel="shortcut icon" href="{{ asset('assets/admin/assets/img/favicon/favicon.ico') }}">
