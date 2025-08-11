@@ -27,13 +27,15 @@
                 <!-- Bộ lọc -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form action="{{ route('admin.rooms.index') }}" method="GET" id="filterForm" class="row g-3 align-items-end">
+                        <form action="{{ route('admin.rooms.index') }}" method="GET" id="filterForm"
+                            class="row g-3 align-items-end">
                             <div class="col-md-3">
                                 <label class="form-label">Loại phòng</label>
                                 <select name="room_type_id" class="form-control form-control-sm">
                                     <option value="">Tất cả</option>
                                     @foreach ($allRoomTypes as $type)
-                                        <option value="{{ $type->id }}" {{ request('room_type_id') == $type->id ? 'selected' : '' }}>
+                                        <option value="{{ $type->id }}"
+                                            {{ request('room_type_id') == $type->id ? 'selected' : '' }}>
                                             {{ $type->name }}
                                         </option>
                                     @endforeach
@@ -43,25 +45,29 @@
                                 <label class="form-label">Trạng thái</label>
                                 <select name="status" class="form-control form-control-sm">
                                     <option value="">Tất cả</option>
-                                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Còn trống</option>
-                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Đã đặt</option>
+                                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Còn
+                                        trống</option>
+                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Đã đặt
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Số phòng</label>
                                 <input type="text" name="room_number" class="form-control form-control-sm"
-                                       value="{{ request('room_number') }}" placeholder="Nhập số phòng">
+                                    value="{{ request('room_number') }}" placeholder="Nhập số phòng">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Khoảng thời gian</label>
-                                <input type="text" name="date_range" class="form-control form-control-sm date-range-picker"
-                                       value="{{ $dateRange }}" placeholder="Chọn khoảng thời gian">
+                                <input type="text" name="date_range"
+                                    class="form-control form-control-sm date-range-picker" value="{{ $dateRange }}"
+                                    placeholder="Chọn khoảng thời gian">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Tiện nghi</label>
                                 <select name="amenities[]" class="form-control form-control-sm select2" multiple>
                                     @foreach ($allAmenities as $amenity)
-                                        <option value="{{ $amenity->id }}" {{ in_array($amenity->id, $amenities) ? 'selected' : '' }}>
+                                        <option value="{{ $amenity->id }}"
+                                            {{ in_array($amenity->id, $amenities) ? 'selected' : '' }}>
                                             {{ $amenity->name }}
                                         </option>
                                     @endforeach
@@ -70,41 +76,51 @@
                             <div class="col-md-2">
                                 <label class="form-label">Giá tối thiểu</label>
                                 <input type="number" name="min_price" class="form-control form-control-sm"
-                                       value="{{ request('min_price') }}" placeholder="Nhập giá tối thiểu">
+                                    value="{{ request('min_price') }}" placeholder="Nhập giá tối thiểu">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Giá tối đa</label>
                                 <input type="number" name="max_price" class="form-control form-control-sm"
-                                       value="{{ request('max_price') }}" placeholder="Nhập giá tối đa">
+                                    value="{{ request('max_price') }}" placeholder="Nhập giá tối đa">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Số lượng người ở</label>
                                 <div class="counter-dropdown">
                                     <input type="text" id="counter_summary" class="form-control form-control-sm"
-                                           value="{{ $totalGuests }} người lớn - {{ $childrenCount }} trẻ em - {{ $roomCount }} phòng" readonly>
+                                        value="{{ $totalGuests }} người lớn - {{ $childrenCount }} trẻ em - {{ $roomCount }} phòng"
+                                        readonly>
                                     <div class="counter-dropdown-content">
                                         <div class="counter-item">
                                             <label>Người lớn</label>
                                             <div class="counter-controls">
-                                                <button type="button" class="counter-btn minus" data-target="total_guests">-</button>
-                                                <input type="text" name="total_guests" class="counter-input" value="{{ $totalGuests }}" readonly>
-                                                <button type="button" class="counter-btn plus" data-target="total_guests">+</button>
+                                                <button type="button" class="counter-btn minus"
+                                                    data-target="total_guests">-</button>
+                                                <input type="text" name="total_guests" class="counter-input"
+                                                    value="{{ $totalGuests }}" readonly>
+                                                <button type="button" class="counter-btn plus"
+                                                    data-target="total_guests">+</button>
                                             </div>
                                         </div>
                                         <div class="counter-item">
                                             <label>Trẻ em</label>
                                             <div class="counter-controls">
-                                                <button type="button" class="counter-btn minus" data-target="children_count">-</button>
-                                                <input type="text" name="children_count" class="counter-input" value="{{ $childrenCount }}" readonly>
-                                                <button type="button" class="counter-btn plus" data-target="children_count">+</button>
+                                                <button type="button" class="counter-btn minus"
+                                                    data-target="children_count">-</button>
+                                                <input type="text" name="children_count" class="counter-input"
+                                                    value="{{ $childrenCount }}" readonly>
+                                                <button type="button" class="counter-btn plus"
+                                                    data-target="children_count">+</button>
                                             </div>
                                         </div>
                                         <div class="counter-item">
                                             <label>Phòng</label>
                                             <div class="counter-controls">
-                                                <button type="button" class="counter-btn minus" data-target="room_count">-</button>
-                                                <input type="text" name="room_count" class="counter-input" value="{{ $roomCount }}" readonly>
-                                                <button type="button" class="counter-btn plus" data-target="room_count">+</button>
+                                                <button type="button" class="counter-btn minus"
+                                                    data-target="room_count">-</button>
+                                                <input type="text" name="room_count" class="counter-input"
+                                                    value="{{ $roomCount }}" readonly>
+                                                <button type="button" class="counter-btn plus"
+                                                    data-target="room_count">+</button>
                                             </div>
                                         </div>
                                         <small class="note">
@@ -116,7 +132,8 @@
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary mt-3">Lọc</button>
-                                <a href="{{ route('admin.rooms.index') }}" class="btn btn-secondary mt-3 ms-2">Xóa lọc</a>
+                                <a href="{{ route('admin.rooms.index') }}" class="btn btn-secondary mt-3 ms-2">Xóa
+                                    lọc</a>
                             </div>
                         </form>
                     </div>
@@ -131,40 +148,57 @@
 
                 @foreach ($roomTypes as $roomType)
                     <div class="section-title">
-                        <h4>{{ $roomType->name }} ({{ $roomType->rooms->count() }} phòng - {{ $roomType->available_rooms_count }} trống{{ $roomType->booked_rooms_count ? ', ' . $roomType->booked_rooms_count . ' đã đặt' : '' }})</h4>
+                        <h4>{{ $roomType->name }} ({{ $roomType->rooms->count() }} phòng -
+                            {{ $roomType->available_rooms_count }}
+                            trống{{ $roomType->booked_rooms_count ? ', ' . $roomType->booked_rooms_count . ' đã đặt' : '' }})
+                        </h4>
                     </div>
                     <div class="row room-list" data-room-type-id="{{ $roomType->id }}">
                         @forelse ($roomType->rooms as $index => $room)
                             <div class="col-xl-3 col-md-6 room-item {{ $index >= 4 ? 'hidden-room' : '' }}">
-                                <div class="lh-card {{ $room->filtered_status === 'booked' ? 'booked room-card' : 'room-card' }}" id="bookingtbl">
+                                <div class="lh-card {{ $room->filtered_status === 'booked' ? 'booked room-card' : 'room-card' }}"
+                                    id="bookingtbl">
                                     <div class="lh-card-header">
                                         <h4 class="lh-card-title">{{ $room->room_number }}</h4>
                                         <div class="header-tools">
-                                            @if($room->booking_count > 0)
-                                                <a href="{{ route('admin.rooms.booked') }}?room_id={{ $room->id }}&date_range={{ request('date_range') }}" class="booking-count">
+                                            @if ($room->booking_count > 0)
+                                                <a href="{{ route('admin.rooms.booked') }}?room_id={{ $room->id }}&date_range={{ request('date_range') }}"
+                                                    class="booking-count">
                                                     {{ $room->booking_count }} <i class="ri-list-check"></i>
                                                 </a>
                                             @endif
                                             <div class="action-buttons">
-                                                <a href="{{ route('admin.rooms.edit', $room->id) }}" class="btn btn-sm btn-primary">
+                                                <a href="{{ route('admin.rooms.edit', $room->id) }}"
+                                                    class="btn btn-sm btn-primary">
                                                     <i class="ri-edit-line"></i>
                                                 </a>
-                                                @if(isset($checkIn) && isset($checkOut))
-                                                    <a href="{{ route('admin.rooms.show', ['id' => $room->id, 'checkIn' => $checkIn, 'checkOut' => $checkOut]) }}" class="btn btn-sm btn-success">
+                                                @if (isset($checkIn) && isset($checkOut))
+                                                    <a href="{{ route('admin.rooms.show', ['id' => $room->id, 'checkIn' => $checkIn, 'checkOut' => $checkOut]) }}"
+                                                        class="btn btn-sm btn-success">
                                                         <i class="ri-eye-line"></i>
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('admin.rooms.show', $room->id) }}" class="btn btn-sm btn-success">
+                                                    <a href="{{ route('admin.rooms.show', $room->id) }}"
+                                                        class="btn btn-sm btn-success">
                                                         <i class="ri-eye-line"></i>
                                                     </a>
                                                 @endif
-                                                <form action="{{ route('admin.rooms.destroy', $room->id) }}" method="POST" class="delete-form d-inline-block" data-confirm="Bạn có muốn xóa mềm không?">
+                                                <form action="{{ route('admin.rooms.destroy', $room->id) }}"
+                                                    method="POST" class="delete-form d-inline-block"
+                                                    data-confirm="Bạn có muốn xóa mềm không?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="ri-delete-bin-line"></i>
                                                     </button>
                                                 </form>
+                                                @if ($room->filtered_status === 'booked' && $room->bookings->isNotEmpty())
+                                                    <button type="button" class="btn btn-sm btn-warning"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#changeRoomModal{{ $room->id }}">
+                                                        <i class="ri-swap-line"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -194,10 +228,92 @@
                         @endforelse
                         @if ($roomType->rooms->count() > 4)
                             <div class="col-12 text-end mt-3 room-actions">
-                                <button class="btn btn-primary btn-sm show-more" data-room-type-id="{{ $roomType->id }}">Xem thêm</button>
-                                <button class="btn btn-secondary btn-sm hide-less" data-room-type-id="{{ $roomType->id }}" style="display: none;">Ẩn bớt</button>
+                                <button class="btn btn-primary btn-sm show-more"
+                                    data-room-type-id="{{ $roomType->id }}">Xem thêm</button>
+                                <button class="btn btn-secondary btn-sm hide-less"
+                                    data-room-type-id="{{ $roomType->id }}" style="display: none;">Ẩn bớt</button>
                             </div>
                         @endif
+
+                        <!-- Modal đổi phòng cho từng phòng -->
+                        @foreach ($roomType->rooms as $room)
+                            @if ($room->filtered_status === 'booked' && $room->bookings->isNotEmpty())
+                                @php $latestBooking = $room->bookings->first(); @endphp
+                                <div class="modal fade" id="changeRoomModal{{ $room->id }}" tabindex="-1"
+                                    aria-labelledby="changeRoomModalLabel{{ $room->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="changeRoomModalLabel{{ $room->id }}">Đổi
+                                                    phòng cho Booking #{{ $latestBooking->id }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ route('admin.rooms.change-room', $latestBooking->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="new_room_id_{{ $room->id }}"
+                                                            class="form-label">Chọn phòng mới (Loại:
+                                                            {{ $room->roomType->name }})</label>
+                                                        <select name="new_room_id" id="new_room_id_{{ $room->id }}"
+                                                            class="form-control" required>
+                                                            <option value="">Chọn phòng</option>
+                                                            @foreach ($room->roomType->rooms as $availableRoom)
+                                                                @php
+                                                                    $isAvailable = !$availableRoom
+                                                                        ->bookings()
+                                                                        ->whereIn('status', [
+                                                                            'pending_confirmation',
+                                                                            'confirmed',
+                                                                            'paid',
+                                                                            'check_in',
+                                                                        ])
+                                                                        ->where(function ($query) use ($latestBooking) {
+                                                                            $query
+                                                                                ->whereBetween('check_in', [
+                                                                                    $latestBooking->check_in,
+                                                                                    $latestBooking->check_out,
+                                                                                ])
+                                                                                ->orWhereBetween('check_out', [
+                                                                                    $latestBooking->check_in,
+                                                                                    $latestBooking->check_out,
+                                                                                ])
+                                                                                ->orWhere(function ($q) use (
+                                                                                    $latestBooking,
+                                                                                ) {
+                                                                                    $q->where(
+                                                                                        'check_in',
+                                                                                        '<=',
+                                                                                        $latestBooking->check_in,
+                                                                                    )->where(
+                                                                                        'check_out',
+                                                                                        '>=',
+                                                                                        $latestBooking->check_out,
+                                                                                    );
+                                                                                });
+                                                                        })
+                                                                        ->exists();
+                                                                @endphp
+                                                                @if ($availableRoom->id != $room->id && $isAvailable)
+                                                                    <option value="{{ $availableRoom->id }}">Phòng
+                                                                        {{ $availableRoom->room_number }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                        @error('new_room_id')
+                                                            <div class="text-danger mt-2">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Đổi phòng</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
                 @endforeach
 
@@ -214,6 +330,7 @@
         .hidden-room {
             display: none;
         }
+
         .booking-count {
             cursor: pointer;
             color: #007bff;
@@ -222,26 +339,32 @@
             text-decoration: none;
             display: inline-block;
         }
+
         .booking-count:hover {
             text-decoration: underline;
         }
+
         .header-tools {
             display: flex;
             align-items: center;
             gap: 10px;
             position: relative;
         }
+
         .action-buttons {
             display: flex;
             gap: 5px;
         }
+
         .btn-sm {
             padding: 2px 5px;
             font-size: 12px;
         }
+
         .counter-dropdown {
             position: relative;
         }
+
         .counter-dropdown-content {
             display: none;
             position: absolute;
@@ -250,28 +373,33 @@
             padding: 15px;
             z-index: 1000;
             width: 300px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         .counter-dropdown-content.show {
             display: block;
         }
+
         .counter-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
+
         .counter-controls {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .counter-input {
             width: 50px;
             text-align: center;
             border: 1px solid #ddd;
             padding: 5px;
         }
+
         .counter-btn {
             width: 30px;
             height: 30px;
@@ -279,6 +407,7 @@
             background: #f8f9fa;
             cursor: pointer;
         }
+
         .done-btn {
             margin-top: 10px;
             padding: 5px 10px;
@@ -287,6 +416,7 @@
             border: none;
             cursor: pointer;
         }
+
         .note {
             display: block;
             margin-top: 5px;
@@ -312,7 +442,9 @@
                     cancelLabel: 'Hủy',
                     customRangeLabel: 'Tùy chọn',
                     daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-                    monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                    monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                        'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+                    ],
                     firstDay: 1
                 },
                 ranges: {
@@ -357,7 +489,8 @@
                 var totalGuests = parseInt($('input[name="total_guests"]').val());
                 var childrenCount = parseInt($('input[name="children_count"]').val());
                 var roomCount = parseInt($('input[name="room_count"]').val());
-                $('#counter_summary').val(totalGuests + ' người lớn - ' + childrenCount + ' trẻ em - ' + roomCount + ' phòng');
+                $('#counter_summary').val(totalGuests + ' người lớn - ' + childrenCount + ' trẻ em - ' + roomCount +
+                    ' phòng');
             }
 
             // Xử lý nút "Xem thêm" và "Ẩn bớt"

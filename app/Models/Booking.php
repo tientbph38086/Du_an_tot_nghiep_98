@@ -66,6 +66,10 @@ class Booking extends Model
     {
         return $this->belongsToMany(Room::class, 'booking_rooms', 'booking_id', 'room_id');
     }
+    public function room()
+    {
+        return $this->belongsToMany(Room::class, 'booking_rooms', 'booking_id', 'room_id')->first();
+    }
     public function guests()
     {
         return $this->belongsToMany(Guest::class, 'booking_guest', 'booking_id', 'guest_id');
@@ -76,7 +80,8 @@ class Booking extends Model
             ->withPivot('quantity');
     }
 
-    public function Promotions() {
+    public function Promotions()
+    {
         return $this->belongsToMany(Promotion::class, 'booking_promotions', 'booking_id', 'promotion_id');
     }
 
@@ -89,13 +94,13 @@ class Booking extends Model
     public function services()
     {
         return $this->belongsToMany(RoomTypeService::class, 'booking_room_type_services', 'booking_id', 'room_type_service_id')
-                    ->withPivot('quantity', 'price')
-                    ->withTimestamps();
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 
     public function getServiceDetailsAttribute()
     {
-        return $this->services->map(function($roomTypeService) {
+        return $this->services->map(function ($roomTypeService) {
             return [
                 'name' => $roomTypeService->service->name,
                 'quantity' => $roomTypeService->pivot->quantity,

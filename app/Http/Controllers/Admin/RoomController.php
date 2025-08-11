@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreroomRequest;
 use App\Http\Requests\UpdateroomRequest;
 use App\Models\Amenity;
+use App\Models\Booking;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\Staff;
@@ -128,8 +129,7 @@ class RoomController extends BaseAdminController
                     $now = Carbon::now();
                     $bookingCheckOut = Carbon::parse($booking->check_out);
                     return in_array($booking->status, ['confirmed', 'paid', 'check_in'])
-                        && $bookingCheckOut->gt($now)
-                    ;
+                        && $bookingCheckOut->gt($now);
                 });
 
                 if ($hasActiveBooking) {
@@ -146,7 +146,7 @@ class RoomController extends BaseAdminController
                         $bookingCheckIn = Carbon::parse($booking->check_in);
                         $bookingCheckOut = Carbon::parse($booking->check_out);
                         return in_array($booking->status, ['pending_confirmation', 'confirmed', 'paid', 'check_in']) &&
-//                            $bookingCheckOut->gt($now) &&
+                            //                            $bookingCheckOut->gt($now) &&
                             $bookingCheckIn->lte($checkOutDate) &&
                             $bookingCheckOut->gte($checkInDate);
                     });
@@ -416,6 +416,74 @@ class RoomController extends BaseAdminController
             return redirect()->route('admin.rooms.trashed');
         } catch (ModelNotFoundException $e) {
             alert()->error('Lỗi', 'Phòng không tồn tại trong thùng rác!');
+            return back();
+        }
+    }
+
+    // hàm xử lý đổi phòng
+    public function changeRoom(Request $request, Booking $booking)
+    {
+        try {
+            // Validate dữ liệu đầu vào
+            $request->validate([
+                'new_room_id' => 'required|exists:rooms,id',
+            ], [
+                'new_room_id.required' => 'Vui lòng chọn phòng mới.',
+                'new_room_id.exists' => 'Phòng được chọn không tồn tại trong hệ thống.',
+            ]);
+
+            $newRoomId = $request->input('new_room_id');
+            $checkIn = Carbon::parse($booking->check_in)->toDateString();
+            $checkOut = Carbon::parse($booking->check_out)->toDateString();
+
+            // Lấy thông tin phòng mới và kiểm tra xem có booking nào trùng lịch không
+            $newRoom = Room::with(['bookings' => function ($query) use ($checkIn, $checkOut, $booking) {
+                $query->where('bookings.id', '!=', $booking->id)
+                    ->whereIn('bookings.status', ['pending_confirmation', 'confirmed', 'paid', 'check_in'])
+                    ->where(function ($q) use ($checkIn, $checkOut) {
+                        $q->whereDate('bookings.check_in', '<', $checkOut)
+                            ->whereDate('bookings.check_out', '>', $checkIn);
+                    });
+            }])
+                ->where('id', $newRoomId)
+                ->whereNull('deleted_at')
+                ->firstOrFail();
+
+            // Nếu phòng mới có các booking trùng thời gian thì không cho đổi
+            if ($newRoom->bookings->count() > 0) {
+                return back()->withErrors(['new_room_id' => 'Phòng này đã được đặt trong khoảng thời gian bạn chọn.']);
+            }
+
+            // Lấy phòng hiện tại của booking
+            $currentRoom = $booking->rooms()->first();
+            if (!$currentRoom) {
+                return back()->withErrors(['room' => 'Không tìm thấy phòng hiện tại của booking.']);
+            }
+
+            // So sánh loại phòng
+            if ($newRoom->roomType->id !== $currentRoom->roomType->id) {
+                return back()->withErrors(['new_room_id' => 'Loại phòng không khớp với phòng hiện tại.']);
+            }
+
+            // Kiểm tra sức chứa
+            $totalGuests = $booking->total_guests ?? 0;
+            $childrenCount = $booking->children_count ?? 0;
+            if (
+                $newRoom->roomType->max_capacity < $totalGuests ||
+                $newRoom->roomType->children_free_limit < $childrenCount
+            ) {
+                return back()->withErrors(['new_room_id' => 'Phòng mới không đủ sức chứa cho số lượng khách hiện tại.']);
+            }
+
+            // Cập nhật lại room_id trong bảng booking_rooms
+            $bookingRoom = $booking->rooms()->first()->pivot;
+            $bookingRoom->update(['room_id' => $newRoomId]);
+
+            alert()->success('Thành công', 'Đổi phòng thành công!');
+            return redirect()->route('admin.rooms.index');
+        } catch (\Throwable $th) {
+            Log::error("Lỗi trong changeRoom: " . $th->getMessage());
+            alert()->error('Lỗi', 'Có lỗi xảy ra: ' . $th->getMessage());
             return back();
         }
     }

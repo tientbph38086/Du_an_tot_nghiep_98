@@ -4,7 +4,7 @@
         <section class="section-room-details padding-tb-100">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8" data-aos="fade-up" data-aos-duration="2000">
+                    <div class="col-lg-8" data-aos="fade-up" data-aos-duration="2000" style="padding-top: 90px">
                         <div class="lh-room-details">
                             <div class="lh-main-room">
                                 <div class="slider slider-for">
