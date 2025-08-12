@@ -24,6 +24,8 @@ use App\Models\RulesAndRegulation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Policy;
+use App\Models\Post;
+use App\Models\PostCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Review;
@@ -85,13 +87,13 @@ class HomeController extends Controller
             $now = Carbon::now();
 
             // Kiểm tra nếu ngày nhận phòng là ngày hiện tại
-//            if ($checkInDate->isToday()) {
-//                // Nếu thời gian hiện tại từ 21:00 đến 23:59:59, đẩy ngày nhận phòng sang ngày hôm sau
-//                if ($now->hour >= 21 && $now->hour < 24) {
-//                    $checkInDate = $now->copy()->addDay()->setHour(14)->setMinute(0)->setSecond(0);
-//                    $checkIn = $checkInDate->toDateTimeString();
-//                }
-//            }
+            //            if ($checkInDate->isToday()) {
+            //                // Nếu thời gian hiện tại từ 21:00 đến 23:59:59, đẩy ngày nhận phòng sang ngày hôm sau
+            //                if ($now->hour >= 21 && $now->hour < 24) {
+            //                    $checkInDate = $now->copy()->addDay()->setHour(14)->setMinute(0)->setSecond(0);
+            //                    $checkIn = $checkInDate->toDateTimeString();
+            //                }
+            //            }
 
 
             // Đảm bảo ngày trả phòng luôn sau ngày nhận phòng
@@ -187,6 +189,12 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        $posts = Post::with('category')
+            ->where('status', 'published')
+            ->latest()
+            ->take(3)
+            ->get(); // Lấy 3 bài viết mới nhất
+
         return view('clients.home', compact(
             'roomTypes',
             'checkIn',
@@ -201,7 +209,8 @@ class HomeController extends Controller
             'maxCapacity',
             'maxChildrenLimit',
             'totalAvailableRooms',
-            'reviews'
+            'reviews',
+            'posts'
         ));
     }
 
@@ -239,13 +248,13 @@ class HomeController extends Controller
             $now = Carbon::now();
 
             // Kiểm tra nếu ngày nhận phòng là ngày hiện tại
-//            if ($checkInDate->isToday()) {
-//                // Nếu thời gian hiện tại từ 21:00 đến 23:59:59, đẩy ngày nhận phòng sang ngày hôm sau
-//                if ($now->hour >= 21 && $now->hour < 24) {
-//                    $checkInDate = $now->copy()->addDay()->setHour(14)->setMinute(0)->setSecond(0);
-//                    $checkIn = $checkInDate->toDateTimeString();
-//                }
-//            }
+            //            if ($checkInDate->isToday()) {
+            //                // Nếu thời gian hiện tại từ 21:00 đến 23:59:59, đẩy ngày nhận phòng sang ngày hôm sau
+            //                if ($now->hour >= 21 && $now->hour < 24) {
+            //                    $checkInDate = $now->copy()->addDay()->setHour(14)->setMinute(0)->setSecond(0);
+            //                    $checkIn = $checkInDate->toDateTimeString();
+            //                }
+            //            }
 
             // Đảm bảo ngày trả phòng luôn sau ngày nhận phòng
             if ($checkInDate->gte($checkOutDate)) {

@@ -12,23 +12,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">Trang Chủ</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ route('room.view') }}">Danh sách loại phòng</a>
-                    </li>
+                    </li> --}}
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ route('introductions') }}">Giới thiệu</a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('faqs') }}">Câu hỏi thường gặp</a>
+                        <a class="nav-link" href="{{ route('client.posts.index') }}">Tin tức</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('policies') }}">Chính sách</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contacts') }}">Liên hệ với chúng tôi</a>
+                        <a class="nav-link" href="{{ route('contacts') }}">Liên hệ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('clients.promotions.index') }}">Ưu đãi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('faqs') }}">Câu hỏi thường gặp</a>
                     </li>
                     @if (Route::has('login'))
                         <li class="nav-item dropdown">

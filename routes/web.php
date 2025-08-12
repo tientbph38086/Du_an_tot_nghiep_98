@@ -33,12 +33,16 @@ use App\Http\Controllers\Admin\SaleRoomTypeController;
 use App\Http\Controllers\Admin\StaffAttendanceController;
 use App\Http\Controllers\Admin\RoomTypePromotionController;
 use App\Http\Controllers\Admin\RulesAndRegulationController;
+use App\Http\Controllers\Admin\AdminAccountController;
+use App\Http\Controllers\Admin\PostCategoryController;
+use App\Http\Controllers\Admin\PostController;
+
 use App\Http\Controllers\Client\BookingController as ClientBookingController;
+use App\Http\Controllers\Client\PostClientController;
 use App\Http\Controllers\Client\RefundController as ClientRefundController;
 use App\Http\Controllers\Client\PromotionController as ClientPromotionController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Admin\AdminAccountController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -112,6 +116,33 @@ Route::prefix('admin')
                 Route::get('{id}/show', [RoomTypePromotionController::class, 'show'])->name('show');
                 Route::put('{id}/update', [RoomTypePromotionController::class, 'update'])->name('update');
                 Route::delete('{id}/destroy', [RoomTypePromotionController::class, 'destroy'])->name('destroy');
+            });
+
+        // Post Categories
+        Route::prefix('postcategory')
+            ->as('postcategory.')
+            ->group(function () {
+                Route::get('/', [PostCategoryController::class, 'index'])->name('index');
+                Route::get('/create', [PostCategoryController::class, 'create'])->name('create');
+                Route::post('/store', [PostCategoryController::class, 'store'])->name('store');
+                Route::get('/{id}', [PostCategoryController::class, 'show'])->name('show');
+                Route::get('/{id}/edit', [PostCategoryController::class, 'edit'])->name('edit');
+                Route::put('/{id}', [PostCategoryController::class, 'update'])->name('update');
+                Route::delete('/{id}', [PostCategoryController::class, 'destroy'])->name('destroy');
+                Route::post('/{id}/status', [PostCategoryController::class, 'updateStatus'])->name('updateStatus');
+            });
+
+        // Posts
+        Route::prefix('post')
+            ->as('post.')
+            ->group(function () {
+                Route::get('/', [PostController::class, 'listPost'])->name('listPost');
+                Route::get('/add-post', [PostController::class, 'addPost'])->name('addPost');
+                Route::post('/add-post', [PostController::class, 'addPostPost'])->name('addPostPost');
+                Route::get('/detail-post/{idPost}', [PostController::class, 'detailPost'])->name('detailPost');
+                Route::delete('/delete-post', [PostController::class, 'deletePost'])->name('deletePost');
+                Route::get('update-post/{idPost}', [PostController::class, 'updatePost'])->name('updatePost');
+                Route::patch('update-post/{idPost}', [PostController::class, 'updatePatchPost'])->name('updatePatchPost');
             });
 
         // quản lý phòng
@@ -379,6 +410,11 @@ Route::get('/uu-dai', [ClientPromotionController::class, 'index'])->name('client
 Route::get('/gioi-thieu', [HomeController::class, 'introductions'])->name('introductions'); // Giới thiệu
 Route::get('/lien-he-voi-chung-toi', [HomeController::class, 'contacts'])->name('contacts'); // Liên hệ
 Route::post('/lien-he-voi-chung-toi', [HomeController::class, 'send'])->name('contact.send'); // Gửi liên hệ
+
+// router tin tức client
+Route::get('/tin-tuc', [PostClientController::class, 'index'])->name('client.posts.index');
+Route::get('/tin-tuc/{post:slug}', [PostClientController::class, 'show'])->name('client.posts.show');
+Route::get('/tin-tuc/danh-muc/{id}', [PostClientController::class, 'byCategory'])->name('client.posts.byCategory');
 
 // quản lý đặt phòng phía client
 Route::prefix('bookings')

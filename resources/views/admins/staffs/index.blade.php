@@ -76,10 +76,17 @@
                                             @foreach ($staffs as $index => $item)
                                                 <tr>
                                                     <td class="token">{{ $item->id }}</td>
-                                                    <td><span class="name">{{ $item->user->name }}</span>
+                                                    <td>
+                                                        <span class="name">
+                                                            {{ $item->user ? $item->user->name : 'Không có người dùng' }}
+                                                        </span>
                                                     </td>
-                                                    <td class="email">{{ $item->user->email }}</td>
-                                                    <td class="status">{{ $item->status == 'active' ? "Hoạt động" : "Không hoạt động" }}</td>
+                                                    <td class="email">
+                                                        {{ $item->user ? $item->user->email : 'Không có email' }}
+                                                    </td>
+                                                    <td class="status">
+                                                        {{ $item->status == 'active' ? 'Hoạt động' : 'Không hoạt động' }}
+                                                    </td>
                                                     <td>
                                                         <div class="btn-group">
 

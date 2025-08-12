@@ -402,6 +402,14 @@
                         <li><a href="{{ route('admin.banners.index') }}" class="lh-page-link drop"><i
                                     class="ri-git-commit-line"></i>Quản lý banner</a></li>
                         @endcan
+                        @can('banners_list')
+                        <li><a href="{{ route('admin.postcategory.index') }}" class="lh-page-link drop"><i
+                                    class="ri-git-commit-line"></i>Quản lý danh mục bài viết</a></li>
+                        @endcan
+                        @can('banners_list')
+                        <li><a href="{{ route('admin.post.listPost') }}" class="lh-page-link drop"><i
+                                    class="ri-git-commit-line"></i>Quản lý bài viết</a></li>
+                        @endcan
                         @can('systems_list')
                         <li><a href="{{ route('admin.systems.index') }}" class="lh-page-link drop"><i
                                     class="ri-git-commit-line"></i>Quản lý system </a></li>
