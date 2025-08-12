@@ -43,3 +43,29 @@
         </div>
     </div>
 </section>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+
+
+<style>
+    .lh-slide-title {
+        font-family: 'Cactus Classical Serif';
+        font-weight: 600;
+        font-size: 60px;
+        margin-bottom: 20px;
+    }
+
+    .lh-slide-btn .lh-buttons-2 {
+        font-family: 'Lato', sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .lh-main-slider,
+    .lh-slide-item {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+</style>
