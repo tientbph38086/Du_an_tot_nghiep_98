@@ -5,23 +5,37 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 
-class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
+class CustomVerifyEmail extends Notification
 {
     use Queueable;
 
+    public function __construct()
+    {
+        //
+    }
+
+    public function via($notifiable)
+    {
+        return ['mail'];
+    }
+
     public function toMail($notifiable)
     {
-        $verificationUrl = $this->verificationUrl($notifiable);
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
+        );
 
         return (new MailMessage)
-            ->subject('Xác thực địa chỉ email')
-            ->greeting('Xin chào ' . $notifiable->name . '!')
-            ->line('Cảm ơn bạn đã đăng ký tài khoản.')
-            ->line('Vui lòng click vào nút bên dưới để xác thực địa chỉ email của bạn.')
-            ->action('Xác thực Email', $verificationUrl)
-            ->line('Nếu bạn không tạo tài khoản này, vui lòng bỏ qua email này.')
-            ->salutation('Trân trọng,');
+            ->subject('Xác minh email của bạn - Lumora Hotel')
+            ->view('emails.verify_email', [
+                'user' => $notifiable,
+                'verificationUrl' => $verificationUrl
+            ]);
     }
 }

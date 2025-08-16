@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -192,8 +191,8 @@
         </div>
     </main>
 
-<!-- Thêm SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Thêm SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Vendor Custom -->
     <script src="{{ asset('assets/admin/assets/js/vendor/jquery-3.6.4.min.js') }}"></script>
@@ -227,8 +226,31 @@
         CKEDITOR.replace('editor');
     </script>
 
-</body>
+    <!-- CKEditor 5 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
+    @stack('script')
+
+    <!-- CKEditor Init -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('textarea[data-editor="true"]').forEach(function(el) {
+                ClassicEditor
+                    .create(el)
+                    .then(editor => {
+                        // Đồng bộ nội dung vào textarea trước khi submit form
+                        el.form.addEventListener('submit', function() {
+                            el.value = editor.getData();
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
+
+</body>
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 04 Dec 2024 10:34:20 GMT -->
 

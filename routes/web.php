@@ -43,6 +43,46 @@ use App\Http\Controllers\Client\RefundController as ClientRefundController;
 use App\Http\Controllers\Client\PromotionController as ClientPromotionController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Booking;
+use App\Mail\CancelBookingMail;
+
+// test gửi email
+Route::get('/test-email', function () {
+    $booking = Booking::with(['user', 'payments'])->first();
+    return view('emails.booking_success', compact('booking'));
+});
+
+Route::get('/send-test-email', function () {
+    $booking = Booking::with(['user', 'payments'])->first();
+    Mail::send('emails.booking_success', compact('booking'), function ($message) {
+        $message->to('linhltph49671@gmail.com') // địa chỉ nhận
+            ->subject('Test Email Laravel');
+    });
+    return "Email test đã được gửi!";
+});
+
+Route::get('/test-cancel-email', function () {
+    $booking = Booking::first();
+    return new CancelBookingMail($booking, 'admin');
+});
+
+Route::get('/test-cancel-email-customer', function () {
+    $booking = Booking::first();
+    return new CancelBookingMail($booking, 'customer');
+});
+
+Route::get('/send-test-cancel-email', function () {
+    // Lấy booking mẫu (đổi ID nếu muốn)
+    $booking = Booking::with(['user', 'refund', 'payments'])->findOrFail(153);
+
+    try {
+        Mail::to('linhltph49671@gmail.com')->send(new CancelBookingMail($booking, 'admin'));
+        return "Email hủy test đã được gửi!";
+    } catch (\Exception $e) {
+        return "Lỗi gửi mail: " . $e->getMessage();
+    }
+});
 
 // Route::get('/', function () {
 //     return view('welcome');

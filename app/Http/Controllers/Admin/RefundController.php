@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CancelBookingMail;
 use App\Models\Refund;
 use App\Models\RefundTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class RefundController extends BaseAdminController
 {
@@ -35,7 +37,7 @@ class RefundController extends BaseAdminController
                 try {
                     // Cập nhật trạng thái hoàn tiền
                     if (!$refundMethod) {
-                        return redirect()->back()->with('success', 'Không được bỏ trống phương thức hoàn tiền.');
+                        return redirect()->back()->with('error', 'Không được bỏ trống phương thức hoàn tiền.');
                     }
                     $refund->update([
                         'status' => 'approved',
@@ -65,6 +67,19 @@ class RefundController extends BaseAdminController
                     // Cập nhật trạng thái booking
                     $refund->booking->update(['status' => 'refunded']);
                     Log::info('Updated booking status to refunded for booking ID: ' . $refund->booking->id);
+
+                    // Gửi email thông báo hoàn tiền
+                    try {
+                        if (!$refund->booking->user || !$refund->booking->user->email) {
+                            Log::error('Không tìm thấy email người dùng cho booking: ' . $refund->booking->id);
+                            throw new \Exception('Không thể gửi email do thiếu thông tin người dùng.');
+                        }
+                        Log::info('Bắt đầu gửi mail hủy booking: ' . $refund->booking->id . ' tới ' . $refund->booking->user->email);
+                        Mail::to($refund->booking->user->email)->send(new CancelBookingMail($refund->booking, 'admin'));
+                        Log::info('Đã gửi mail thành công tới: ' . $refund->booking->user->email);
+                    } catch (\Exception $e) {
+                        Log::error('Lỗi gửi mail cho booking ' . $refund->booking->id . ': ' . $e->getMessage());
+                    }
 
                     DB::commit();
                     Log::info('Successfully approved refund for refund ID: ' . $refund->id);
@@ -164,7 +179,6 @@ class RefundController extends BaseAdminController
 
             Log::info('Successfully prepared response for refund: ' . $refund->id);
             return response()->json($response);
-
         } catch (\Exception $e) {
             Log::error('Error getting refund details: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());

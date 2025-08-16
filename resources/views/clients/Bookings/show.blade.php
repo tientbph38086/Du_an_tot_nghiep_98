@@ -672,6 +672,21 @@
                 <h5 class="modal-title" id="cancelModalLabel">Hủy đặt phòng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="alert alert-info">
+                <h6><strong>Chính sách hoàn tiền:</strong></h6>
+                <ul style="margin-bottom: 0;">
+                    @foreach ($refundPolicies as $policy)
+                        <li>
+                            {{ $policy->name }}: 
+                            @if ($policy->refund_percentage > 0)
+                                Hoàn trả {{ rtrim(rtrim(number_format($policy->refund_percentage, 2), '0'), '.') }}% số tiền đã thanh toán
+                            @else
+                                <span class="text-danger">Không được hoàn trả</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
             <div class="modal-body">
                 <form action="{{ route('refunds.request', $booking->id) }}" method="POST">
                     @csrf

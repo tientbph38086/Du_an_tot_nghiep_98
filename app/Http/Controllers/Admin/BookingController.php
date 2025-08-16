@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorebookingRequest;
 use App\Http\Requests\StoreCheckInRequest;
 use App\Http\Requests\UpdatebookingRequest;
+use App\Mail\CancelBookingMail;
 use App\Mail\PaymentSuccess;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,8 +30,6 @@ class BookingController extends BaseAdminController
         $this->middleware('permission:bookings_delete')->only(['destroy']);
         $this->middleware('permission:bookings_checkin')->only(['storeCheckIn']);
         $this->middleware('permission:bookings_service_plus')->only(['updateServicePlus']);
-
-
     }
     public function index(Request $request)
     {
@@ -652,6 +651,32 @@ class BookingController extends BaseAdminController
         } else {
             return redirect()->route('admin.bookings.index')
                 ->with('error', 'Thanh toán không thành công! Mã lỗi: ' . $vnp_ResponseCode);
+        }
+    }
+
+    public function cancelByAdmin($id)
+    {
+        $booking = Booking::with(['user'])->findOrFail($id);
+
+        if (!in_array($booking->status, ['unpaid', 'partial', 'paid', 'check_in'])) {
+            return back()->with('error', 'Không thể hủy đặt phòng này vì trạng thái không hợp lệ.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $booking->update([
+                'status' => 'cancelled',
+                'actual_check_in' => Carbon::now('Asia/Ho_Chi_Minh'),
+                'actual_check_out' => Carbon::now('Asia/Ho_Chi_Minh'),
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Đã hủy đặt phòng thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi trong cancelByAdmin cho booking ' . $booking->id . ': ' . $e->getMessage());
+            return back()->with('error', 'Lỗi khi hủy đặt phòng: ' . $e->getMessage());
         }
     }
 }
