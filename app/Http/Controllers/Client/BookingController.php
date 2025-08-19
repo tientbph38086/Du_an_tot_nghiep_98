@@ -255,10 +255,10 @@ class BookingController extends Controller
             \Log::info('Selected services in confirm:', ['selectedServices' => $selectedServices, 'serviceQuantities' => $serviceQuantities]);
 
             if ($discountAmount > 0) {
-                $subTotal = ($basePrice - $discountAmount )+ $serviceTotal;
+                $subTotal = ($basePrice - $discountAmount) + $serviceTotal;
                 $taxFee = $subTotal * 0.08; // Thuế 8%
                 $totalPrice = $subTotal + $taxFee;
-            }else{
+            } else {
                 $subTotal = $basePrice + $serviceTotal;
                 $taxFee = $subTotal * 0.08; // Thuế 8%
                 $totalPrice = $subTotal + $taxFee - $discountAmount;
@@ -302,7 +302,6 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
         try {
             DB::beginTransaction();
 
@@ -360,9 +359,8 @@ class BookingController extends Controller
             $taxFee = (float) $request->input('tax_fee');
             $subTotal = (float) $request->input('sub_total');
             $totalPrice = (float) $request->input('total_price');
-            // dd($totalPrice, $basePrice, $discountAmount, $serviceTotal, $taxFee, $subTotal);
 
-            // Tạo bản ghi Booking
+            // Tạo bản ghi Booking trước để có ID
             $booking = Booking::create([
                 'booking_code' => 'BOOK' . time(),
                 'check_in' => $checkIn,
@@ -429,6 +427,7 @@ class BookingController extends Controller
 
                 if ($hasUsedPromotion) {
                     DB::rollBack();
+                    $booking->delete();
                     return redirect()->route('home')->with('error', 'Đã từng sử dụng mã này rồi!');
                 }
                 if ($promotion->quantity > 0) {
@@ -436,16 +435,17 @@ class BookingController extends Controller
                     $booking->promotions()->attach($promotion->id);
                 } else {
                     DB::rollBack();
+                    $booking->delete();
                     return redirect()->route('home')->with('error', 'Đã hết mã giảm giá này.');
                 }
             }
 
-            // Kiểm tra và gán phòng
-            $allRooms = $roomType->rooms;
+            // Kiểm tra và gán phòng với khóa nguyên tử
+            $allRooms = $roomType->rooms()->lockForUpdate()->get(); // Khóa bảng để tránh xung đột
             $bookedRoomIds = Booking::whereHas('rooms', function ($query) use ($roomType) {
                 $query->where('room_type_id', $roomType->id);
             })
-                ->where('id', '!=', $booking->id)
+                ->where('id', '!=', $booking->id) // Loại trừ booking hiện tại
                 ->where(function ($query) use ($checkIn, $checkOut) {
                     $query->whereBetween('check_in', [$checkIn, $checkOut])
                         ->orWhereBetween('check_out', [$checkIn, $checkOut])
@@ -472,7 +472,8 @@ class BookingController extends Controller
 
             if ($roomQuantity > $availableRooms->count()) {
                 DB::rollBack();
-                return redirect()->route('home')->with('error', 'Không đủ phòng trống để đặt.');
+                $booking->delete();
+                return redirect()->route('home')->with('error', 'Không đủ phòng trống để đặt. Vui lòng thử lại.');
             }
 
             $selectedRooms = $availableRooms->take($roomQuantity);
@@ -492,7 +493,6 @@ class BookingController extends Controller
             }
 
             $isPartial = false;
-            // dd($totalPrice);
             $depositAmount = $this->calculateDepositAmount($totalPrice);
             if ($request->payment_amount_type == 'partial') {
                 $isPartial = true;
@@ -559,6 +559,7 @@ class BookingController extends Controller
 
                         if (isset($result['payUrl']) && isset($result['qrCodeUrl'])) {
                             $payment->update(['transaction_id' => $orderId]);
+                            DB::commit();
                             return response()->json([
                                 'success' => true,
                                 'qrCodeUrl' => $result['qrCodeUrl'],
@@ -635,11 +636,7 @@ class BookingController extends Controller
                     $vnp_Url .= "?" . $hashdata . "&vnp_SecureHash=" . $vnpSecureHash;
 
                     $payment->update(['transaction_id' => $vnp_TxnRef]);
-
-
-
                     DB::commit();
-
                     return redirect($vnp_Url);
                 }
             }
