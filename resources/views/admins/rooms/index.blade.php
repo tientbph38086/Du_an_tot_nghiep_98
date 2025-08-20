@@ -183,7 +183,7 @@
                                                         <i class="ri-eye-line"></i>
                                                     </a>
                                                 @endif
-                                                <form action="{{ route('admin.rooms.destroy', $room->id) }}"
+                                                {{-- <form action="{{ route('admin.rooms.destroy', $room->id) }}"
                                                     method="POST" class="delete-form d-inline-block"
                                                     data-confirm="Bạn có muốn xóa mềm không?">
                                                     @csrf
@@ -191,7 +191,7 @@
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="ri-delete-bin-line"></i>
                                                     </button>
-                                                </form>
+                                                </form> --}}
                                                 @if ($room->filtered_status === 'booked' && $room->bookings->isNotEmpty())
                                                     <button type="button" class="btn btn-sm btn-warning"
                                                         data-bs-toggle="modal"
