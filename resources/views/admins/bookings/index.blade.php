@@ -93,6 +93,7 @@
                                             <th>Đã trả</th>
                                             <th>Hoàn tiền</th>
                                             <th>Trạng thái</th>
+                                            <th>Thời gian đặt</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -189,6 +190,8 @@
                                                     </select>
                                                 </form>
                                             </td>
+                                            <td>{{ \App\Helpers\FormatHelper::formatDateTime($booking->created_at) }}</td>
+
                                             <td>
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">

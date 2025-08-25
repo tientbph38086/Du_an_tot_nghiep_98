@@ -679,4 +679,75 @@ class BookingController extends BaseAdminController
             return back()->with('error', 'Lỗi khi hủy đặt phòng: ' . $e->getMessage());
         }
     }
+
+    // hủy tự động nếu khách hàng chưa thanh toán sau 10 phút
+    public function cancelUnpaidBookings()
+    {
+        try {
+            Log::info('Bắt đầu kiểm tra các booking chưa thanh toán quá hạn tại ' . Carbon::now('Asia/Ho_Chi_Minh'));
+
+            $expiredBookings = Booking::whereIn('status', ['unpaid', 'pending'])
+                ->where('created_at', '<=', Carbon::now('Asia/Ho_Chi_Minh')->subMinutes(2))
+                ->with(['user', 'payments'])
+                ->get();
+
+            Log::info('Số booking quá hạn tìm thấy: ' . $expiredBookings->count());
+
+            if ($expiredBookings->isEmpty()) {
+                Log::info('Không có booking nào cần hủy tại ' . Carbon::now('Asia/Ho_Chi_Minh'));
+                return;
+            }
+
+            foreach ($expiredBookings as $booking) {
+                Log::info('Xử lý booking ID: ' . $booking->id . ', Status: ' . $booking->status . ', Created at: ' . $booking->created_at);
+                DB::beginTransaction();
+
+                $booking->update([
+                    'status' => 'cancelled',
+                    'actual_check_in' => Carbon::now('Asia/Ho_Chi_Minh'),
+                    'actual_check_out' => Carbon::now('Asia/Ho_Chi_Minh'),
+                ]);
+
+                Log::info('Đã cập nhật booking ID ' . $booking->id . ' thành cancelled');
+
+                if ($booking->payments) {
+                    foreach ($booking->payments as $payment) {
+                        Log::info('Kiểm tra payment ID: ' . $payment->id . ', Status: ' . $payment->status . ', Booking ID: ' . $payment->booking_id);
+                        if ($payment->status === 'pending') {
+                            $payment->update(['status' => 'failed']);
+                            Log::info('Đã cập nhật payment ID ' . $payment->id . ' thành failed');
+                        } else {
+                            Log::info('Payment ID ' . $payment->id . ' có trạng thái ' . $payment->status . ', không cập nhật');
+                        }
+                    }
+                } else {
+                    Log::info('Booking ID ' . $booking->id . ' không có payments');
+                }
+
+                if ($booking->user && $booking->user->email) {
+                    try {
+                        Mail::to($booking->user->email)->send(
+                            new CancelBookingMail($booking, [
+                                'reason' => 'Đơn đặt phòng của bạn đã bị hủy do chưa thanh toán trong vòng 10 phút theo quy định.'
+                            ])
+                        );
+                        Log::info('Gửi email hủy thành công cho booking: ' . $booking->id);
+                    } catch (\Exception $e) {
+                        Log::warning('Không thể gửi email cho booking ' . $booking->id . ': ' . $e->getMessage());
+                    }
+                } else {
+                    Log::warning('Booking ' . $booking->id . ' không có email người dùng.');
+                }
+
+                DB::commit();
+                Log::info('Đã tự động hủy booking chưa thanh toán: ' . $booking->id . ' tại ' . Carbon::now('Asia/Ho_Chi_Minh'));
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi tự động hủy booking chưa thanh toán: ' . $e->getMessage(), [
+                'exception' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
 }

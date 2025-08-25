@@ -12,12 +12,14 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CancelExpiredPayments::class,
+        Commands\CancelUnpaidBookings::class,
     ];
 
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('payments:cancel-expired')->everyMinute()->withoutOverlapping();
+        // $schedule->command('bookings:cancel-unpaid')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**

@@ -54,7 +54,7 @@
                             @if ($booking->refund && $booking->refund->amount > 0)
                                 {{ number_format($booking->refund->amount, 0, ',', '.') }} VND
                             @else
-                                <span style="color: #d9534f;">Hủy trong vòng 24h không được hoàn tiền</span>
+                                <span style="color: #d9534f;">Quá thời gian 10 phút theo quy định của khách sạn</span>
                             @endif
                         </td>
                     </tr>

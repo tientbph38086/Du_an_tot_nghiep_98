@@ -614,23 +614,34 @@
                         <span class="toggle-icon">▼</span>
                     </div>
                     <div class="booking-section-content">
+                        @if ($booking->status === 'cancelled' && $booking->payments->where('status', 'completed')->isEmpty())
+                            <p class="text-warning">Đơn đặt phòng đã bị hủy tự động do chưa thanh toán trong 10 phút.</p>
+                        @endif
+
                         @forelse ($booking->payments as $payment)
-                        <ul class="payment-list">
-                            <li>
-                                <strong>Phương thức:</strong>
-                                <span class="text-{{ strtolower($payment->method) }}">
-                                    {{ ['momo' => 'MOMO', 'vnpay' => 'VNPAY', 'cash' => 'Tiền mặt'][$payment->method] ?? 'Không xác định' }}
-                                </span><br>
-                                <strong>Số tiền:</strong> {{ \App\Helpers\FormatHelper::formatPrice($payment->amount ?? 0) }}<br>
-                                <strong>Ngày thanh toán:</strong> {{ \App\Helpers\FormatHelper::formatDate($payment->created_at) }}<br>
-                                <strong>Trạng thái:</strong>
-                                <span class="{{ \App\Helpers\PaymentStatusHelper::getStatusClass($payment->status) }}">
-                                    {{ \App\Helpers\PaymentStatusHelper::getStatusLabel($payment->status) }}
-                                </span>
-                            </li>
-                        </ul>
+                            <ul class="payment-list">
+                                <li>
+                                    <strong>Phương thức:</strong>
+                                    <span class="text-{{ strtolower($payment->method) }}">
+                                        {{ ['momo' => 'MOMO', 'vnpay' => 'VNPAY', 'cash' => 'Tiền mặt'][$payment->method] ?? 'Không xác định' }}
+                                    </span><br>
+                                    <strong>Số tiền:</strong> {{ \App\Helpers\FormatHelper::formatPrice($payment->amount ?? 0) }}<br>
+                                    <strong>Ngày thanh toán:</strong> {{ \App\Helpers\FormatHelper::formatDate($payment->created_at) }}<br>
+                                    <strong>Trạng thái:</strong>
+                                    <span class="{{ \App\Helpers\PaymentStatusHelper::getStatusClass($payment->status) }}">
+                                        {{ \App\Helpers\PaymentStatusHelper::getStatusLabel($payment->status) }}
+                                        @if ($payment->status === 'failed' && $booking->status === 'cancelled' && $booking->payments->where('status', 'completed')->isEmpty())
+                                            (do hủy tự động)
+                                        @endif
+                                    </span>
+                                </li>
+                            </ul>
                         @empty
-                        <p>Chưa có thông tin thanh toán.</p>
+                            @if ($booking->status === 'cancelled' && $booking->payments->where('status', 'completed')->isEmpty())
+                                <p>Chưa có thông tin thanh toán. Đơn đã bị hủy tự động.</p>
+                            @else
+                                <p>Chưa có thông tin thanh toán.</p>
+                            @endif
                         @endforelse
                     </div>
                 </div>
