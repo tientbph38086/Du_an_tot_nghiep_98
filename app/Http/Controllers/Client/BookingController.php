@@ -270,6 +270,15 @@ class BookingController extends Controller
 
             $guestData = $request->input('guest');
             $paymentSetting = PaymentSetting::first();
+            $promotions = Promotion::where('status', 'active')
+                ->where('quantity', '>', 0)
+                ->where(function ($query) {
+                    $query->whereNull('end_date')
+                        ->orWhere('end_date', '>=', Carbon::now());
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+
             return view('clients.bookings.confirm', [
                 'roomType' => $roomType,
                 'checkIn' => $checkIn->toDateString(),
@@ -288,6 +297,7 @@ class BookingController extends Controller
                 'serviceQuantities' => $serviceQuantities,
                 'guestData' => $guestData,
                 'deposit_percentage' => $paymentSetting->deposit_percentage,
+                'promotions' => $promotions,
             ]);
         }
 
