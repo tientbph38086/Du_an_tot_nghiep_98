@@ -159,7 +159,7 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('admins.post.listPost')
+        return redirect()->route('admin.post.listPost')
             ->with('message', 'Xóa bài viết thành công!');
     }
 }

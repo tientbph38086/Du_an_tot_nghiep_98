@@ -95,7 +95,7 @@ class BookingController extends BaseAdminController
             // Kiểm tra thời gian check-in phải sau 14h ngày check-in
             $checkInDate = Carbon::parse($booking->check_in);
             $currentTime = Carbon::now();
-            $checkInTime = $checkInDate->copy()->setTime(14, 0, 0);
+            $checkInTime = $checkInDate->copy()->setTime(01, 0, 0);
 
             if ($currentTime->lt($checkInTime)) {
                 Log::info('Check-in time not allowed', [
@@ -687,7 +687,7 @@ class BookingController extends BaseAdminController
             Log::info('Bắt đầu kiểm tra các booking chưa thanh toán quá hạn tại ' . Carbon::now('Asia/Ho_Chi_Minh'));
 
             $expiredBookings = Booking::whereIn('status', ['unpaid', 'pending'])
-                ->where('created_at', '<=', Carbon::now('Asia/Ho_Chi_Minh')->subMinutes(2))
+                ->where('created_at', '<=', Carbon::now('Asia/Ho_Chi_Minh')->subMinutes(3))
                 ->with(['user', 'payments'])
                 ->get();
 

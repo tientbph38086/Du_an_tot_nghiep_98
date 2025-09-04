@@ -34,7 +34,7 @@
                                                     {{ $review->user->name ?? 'Khách hàng' }},
                                                     <span>{{ $review->created_at->format('d/m/Y') }}</span>
                                                 </span>
-                                                {{-- @if ($review->response)
+                                                @if ($review->response)
                                                     <div class="response-section mt-3 p-3 bg-light rounded">
                                                         <h6 class="mb-2 text-dark">
                                                             <i class="fas fa-reply me-2"></i>
@@ -45,7 +45,7 @@
                                                             {{ $review->updated_at->format('d/m/Y H:i') }}
                                                         </small>
                                                     </div>
-                                                @endif --}}
+                                                @endif
                                             </div>
 
                                         </div>

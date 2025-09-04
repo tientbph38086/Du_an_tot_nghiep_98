@@ -59,24 +59,6 @@
     </div>
 </div>
 
-<!-- Tags (có thể tĩnh hoặc động nếu bạn có tags) -->
-<div class="lh-our-blog" data-aos="fade-up" data-aos-duration="2000">
-    <div class="lh-our-blog-tages">
-        <div class="lh-our-blog-heading">
-            <h4>Tags</h4>
-        </div>
-        <div class="lh-our-blog-tages-inner">
-            <ul class="lh-our-blog-tages-inner-element">
-                <li><a href="#">Entertainment</a></li>
-                <li><a href="#">Booking</a></li>
-                <li><a href="#">Gym</a></li>
-                <li><a href="#">Hotel</a></li>
-                <li><a href="#">Guests</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
 <!-- Instagram (HTML tĩnh) -->
 <div class="lh-our-blog" data-aos="fade-up" data-aos-duration="2200">
     <div class="lh-our-blog-instagram">

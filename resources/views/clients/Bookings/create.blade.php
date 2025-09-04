@@ -283,7 +283,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
                                         <label class="form-check-label" for="terms">
-                                            Tôi đã đọc và đồng ý với các điều khoản và điều kiện.
+                                            Tôi đã đọc và đồng ý với các điều khoản và điều kiện. <a href="/chinh-sach" target="_blank">Tại đây</a>
                                         </label>
                                     </div>
                                 </div>
@@ -309,5 +309,16 @@
         .progress-step .step-label { font-size: 14px; color: #333; text-align: center; }
         .progress-line { flex: 1; height: 2px; background-color: #007bff; margin: 0 10px; }
         .form-check { margin-bottom: 10px; }
+        
+         a {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+            }
+
+        a:hover {
+            color: #0056b3;
+            text-decoration: none;
+        }
     </style>
 @endsection

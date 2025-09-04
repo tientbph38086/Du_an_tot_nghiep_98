@@ -27,7 +27,7 @@
                         <div class="lh-hover-drop-panel right">
                             <ul>
                                 <li><a href="javascript:void(0)"><img class="flag" src="{{ asset('assets/admin/assets/img/flag/vn.png')}}"
-                                    alt="flag">Việt nam</a></li>
+                                    alt="flag">Việt Nam</a></li>
                             </ul>
                         </div>
                     </div>

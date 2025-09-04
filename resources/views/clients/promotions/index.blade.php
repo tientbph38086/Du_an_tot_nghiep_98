@@ -51,6 +51,7 @@
                                 </div>
                                 <div class="col-8">
                                     <div class="card-body p-4">
+                                        <h6 class="card-title fw-bold code-text">{{ $promotion->name }} </h6>
                                         <h5 class="card-title fw-bold text-danger mb-3 code-text">{{ $promotion->code }}
                                         </h5>
                                         <ul class="list-unstyled text-muted small">
@@ -88,7 +89,7 @@
 
     <style>
         .discount-bg {
-            background: linear-gradient(135deg, hsl(133, 80%, 44%) 0%, hsl(133, 80%, 44%) 100%);
+            background: linear-gradient(135deg, hsl(237, 79%, 47%) 0%, hsl(133, 80%, 44%) 100%);
             transition: all 0.3s ease;
         }
 
@@ -106,14 +107,14 @@
         }
 
         .copy-btn {
-            background-color: hsl(133, 80%, 44%);
+            background-color: rgb(21, 28, 171);
             border: none;
             border-radius: 25px;
             padding: 8px 15px;
         }
 
         .copy-btn:hover {
-            background-color: hsl(133, 80%, 44%);
+            background-color: rgb(37, 77, 199);
             transform: translateY(-2px);
         }
 

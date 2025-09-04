@@ -19,7 +19,7 @@
                             <th>STT</th>
                             <th>Tiêu đề</th>
                             <th>Danh mục</th>
-                            <th>Tác giả</th>
+                            {{-- <th>Tác giả</th> --}}
                             <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
@@ -31,7 +31,7 @@
                                 <td title="{{ $post->title }}">{{ Str::limit($post->title, 50, '...') }}</td>
 
                                 <td>{{ $post->category->name ?? 'Không có' }}</td>
-                                <td>{{ $post->author->name ?? 'Không rõ' }}</td>
+                                {{-- <td>{{ $post->author->name ?? 'Không rõ' }}</td> --}}
                                 <td>
                                     @php
                                         $statusColors = [
