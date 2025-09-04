@@ -234,7 +234,7 @@
         </div>
     </div>
 
-        <section class="py-5" id="rooms">
+    <section class="py-5" id="rooms">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-dark position-relative d-inline-block pb-2">

@@ -631,7 +631,6 @@
                                     <span class="{{ \App\Helpers\PaymentStatusHelper::getStatusClass($payment->status) }}">
                                         {{ \App\Helpers\PaymentStatusHelper::getStatusLabel($payment->status) }}
                                         @if ($payment->status === 'failed' && $booking->status === 'cancelled' && $booking->payments->where('status', 'completed')->isEmpty())
-                                            (do hủy tự động)
                                         @endif
                                     </span>
                                 </li>
